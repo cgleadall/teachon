@@ -1,4 +1,10 @@
 /**
+ * Get Average Level for a list - Must be a column list of levels.
+ * @param {range} the list of levels to use to calculate the average.
+ * @example AVERAGE_LEVEL(B3:B10)
+ * @returns {String} Returns the average of the list of Levels
+ * @customfunction
+
     Copyright (C) 2014  Craig Gleadall
     https://github.com/cgleadall/teachon
 
@@ -15,17 +21,10 @@
     You should have received a copy of the GNU General Public License along
     with this program; if not, write to the Free Software Foundation, Inc.,
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
-
-/**
- * Get Average Level for a list - Must be a column list of levels.
- * @param {range} the list of levels to use to calculate the average.
- * @example AVERAGE_LEVEL(B3:B10)
- * @returns {String} Returns the average of the list of Levels
- * @customfunction
+    
 */
  
- function AVERAGE_LEVEL(list)
+ function AVERAGE_LEVEL(list, show)
  {
   var result = "";
   var data = Array(list);
@@ -33,24 +32,29 @@
   var sum = 0;
   var valueCount = 0;
   var containsRorI = false;
+  var extraInformation = "";
   
-  var length = data[0].length;
+  var values = String(data).split(",");
+  var numberOfValuesToAverage = values.length;
   
   var lookupArray = ["1-", "1", "1+", "2-", "2", "2+", "3-", "3", "3+", "4-", "4", "4+", "4++", "4+++"];
-  
-  for(var z= 0; z< length; z++)
-  {
-    var lookupValue = String(data[0][z]).toLowerCase();
 
-    if( lookupValue.length > 0)
-    {
-      if( lookupValue == "r" || lookupValue == "i"){      
-        containsRorI = true;
-      }
-      else{
-      valueCount++
-      sum += lookupArray.indexOf(lookupValue) + 1; // Need to add 1 because it is 0-indexed
-      }
+  for( var r = 0; r < numberOfValuesToAverage; r++)
+  {
+      var lookupValue = String(values[r]).toLowerCase();
+      
+      if( lookupValue.length > 0)
+      {
+        if( lookupValue == "r" || lookupValue == "i" || lookupValue == "4R")
+        {      
+          containsRorI = true;
+          extraInformation += lookupValue.toUpperCase();
+        }
+        else
+        {
+          valueCount++
+          sum += lookupArray.indexOf(lookupValue) + 1; // Need to add 1 because it is 0-indexed
+        }
     }
   }
 
@@ -60,10 +64,18 @@
     result = String(lookupArray[averageLevel-1]);  // Need to subtract 1 because it is 0-indexed
   }
   
-  if(containsRorI){  // add a '*' if there is an R or I in the range of levels
+  if(containsRorI && extraInformation.length < 5){  // add a '*' if there is an R or I in the range of levels
+    result = result + "(" + extraInformation + ")";
+  }
+  else if ( containsRorI ) 
+  {
     result = result + "*";
   }
   
-  return result;
+  if(show){
+    return result + " : " + JSON.stringify(values);
+  } else {
+    return result;
+  }
 }
  
