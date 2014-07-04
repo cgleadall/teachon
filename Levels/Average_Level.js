@@ -37,7 +37,7 @@
   var values = String(data).split(",");
   var numberOfValuesToAverage = values.length;
   
-  var lookupArray = ["1-", "1", "1+", "2-", "2", "2+", "3-", "3", "3+", "4-", "4", "4+", "4++", "4+++"];
+  var lookupArray = ["1-", "1", "1+", "2-", "2", "2+", "3-", "3", "3+", "4-", "4", "4'", "4+"];
 
   for( var r = 0; r < numberOfValuesToAverage; r++)
   {
@@ -45,7 +45,7 @@
       
       if( lookupValue.length > 0)
       {
-        if( lookupValue == "r" || lookupValue == "i" || lookupValue == "4R")
+        if( lookupValue == "r" || lookupValue == "i")
         {      
           containsRorI = true;
           extraInformation += lookupValue.toUpperCase();
